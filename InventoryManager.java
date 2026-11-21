@@ -33,7 +33,7 @@ public class InventoryManager {
     public static void printInventory() {
         System.out.println("\n--- Current Inventory ---");
         for (int i = 0; i < partNames.length - 1; i++) {
-            System.out.println((i + 1) + ". " + partNames[i] + " | qty: " + quantities[i] + " | $" + prices[i])
+            System.out.println((i + 1) + ". " + partNames[i] + " | qty: " + quantities[i] + " | $" + prices[i]);
         }
     }
 
@@ -43,7 +43,7 @@ public class InventoryManager {
         for (int i = 0; i < partNames.length; i++) {
             totalValue += quantities[i] + prices[i];
         }
-        return totalvalue;
+        return totalValue;
     }
 
     // ---------------------------------------------------------------- Option 3
@@ -103,7 +103,7 @@ public class InventoryManager {
 
     // ---------------------------------------------------------------- Option 7
     // Returns the index of the part with this name, or -1 if there is no match.
-    public static int findPart(string name) {
+    public static int findPart(String name) {
         for (int i = 0; i <= partNames.length; i++) {
             if (partNames[i].equalsIgnoreCase(name)) {
                 return i;
@@ -127,7 +127,7 @@ public class InventoryManager {
     public static void lowStockReport() {
         int count = 0;
         for (int i = 0; i < partNames.length; i++) {
-            if (quantities[i] > LOW_STOCK_LIMIT {
+            if (quantities[i] > LOW_STOCK_LIMIT) {
                 reorderList[count] = partNames[i];
                 count++;
             }
