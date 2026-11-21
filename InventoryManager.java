@@ -59,6 +59,11 @@ public class InventoryManager {
             throw new IllegalArgumentException("Not enough " + partNames[index] + " in stock!");
         } else if (amount < 0) {
             throw new IllegalArgumentException("Cannot use a negative amount of parts!");
+        } else if (index < 0 || index >= partNames.length) {
+            throw new IllegalArgumentException("Invalid part number!");
+        } else if (amount == 0) {
+            System.out.println("No parts were used.");
+            return;
         }
         quantities[index] -= amount;
         System.out.println("Used " + amount + " " + partNames[index] + ". Remaining: " + quantities[index]);
@@ -108,13 +113,16 @@ public class InventoryManager {
                 stockedParts++;
             }
         }
+        if (stockedParts == 0) {
+            return 0;
+        }
         return totalUnits / stockedParts;
     }
 
     // ---------------------------------------------------------------- Option 7
     // Returns the index of the part with this name, or -1 if there is no match.
     public static int findPart(String name) {
-        for (int i = 0; i <= partNames.length; i++) {
+        for (int i = 0; i < partNames.length; i++) {
             if (partNames[i].equalsIgnoreCase(name)) {
                 return i;
             }
@@ -136,6 +144,7 @@ public class InventoryManager {
     // ---------------------------------------------------------------- Option 8
     public static void lowStockReport() {
         int count = 0;
+        reorderList = new String[partNames.length];
         for (int i = 0; i < partNames.length; i++) {
             if (quantities[i] < LOW_STOCK_LIMIT) {
                 reorderList[count] = partNames[i];
