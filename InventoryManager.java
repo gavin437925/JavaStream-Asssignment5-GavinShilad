@@ -32,7 +32,7 @@ public class InventoryManager {
     // ---------------------------------------------------------------- Option 1
     public static void printInventory() {
         System.out.println("\n--- Current Inventory ---");
-        for (int i = 0; i < partNames.length - 1; i++) {
+        for (int i = 0; i < partNames.length; i++) {
             System.out.println((i + 1) + ". " + partNames[i] + " | qty: " + quantities[i] + " | $" + prices[i]);
         }
     }
@@ -41,7 +41,7 @@ public class InventoryManager {
     public static double getTotalValue() {
         double totalValue = 0;
         for (int i = 0; i < partNames.length; i++) {
-            totalValue += quantities[i] + prices[i];
+            totalValue += quantities[i] * prices[i];
         }
         return totalValue;
     }
@@ -57,8 +57,10 @@ public class InventoryManager {
         int index = partNumber - 1;
         if (amount > quantities[index]) {
             throw new IllegalArgumentException("Not enough " + partNames[index] + " in stock!");
+        } else if (amount < 0) {
+            throw new IllegalArgumentException("Cannot use a negative amount of parts!");
         }
-        quantities[index] += amount;
+        quantities[index] -= amount;
         System.out.println("Used " + amount + " " + partNames[index] + ". Remaining: " + quantities[index]);
     }
 
@@ -70,6 +72,12 @@ public class InventoryManager {
         System.out.print("How many units? ");
         int amount = scanner.nextInt();
 
+        if (amount < 0) {
+            throw new IllegalArgumentException("Cannot restock a negative amount of parts!");
+        } else if (amount == 0) {
+            System.out.println("No parts were restocked.");
+            return;
+        }
         int index = partNumber - 1;
         quantities[index] += amount;
         System.out.println("Restocked " + partNames[index] + ". New quantity: " + quantities[index]);
@@ -82,7 +90,9 @@ public class InventoryManager {
         int partNumber = scanner.nextInt();
         System.out.print("New price: ");
         double newPrice = Double.parseDouble(scanner.next());
-
+        if (newPrice < 0) {
+            throw new IllegalArgumentException("Price cannot be negative!");
+        }
         int index = partNumber - 1;
         prices[index] = newPrice;
         System.out.println(partNames[index] + " now costs $" + prices[index]);
@@ -127,7 +137,7 @@ public class InventoryManager {
     public static void lowStockReport() {
         int count = 0;
         for (int i = 0; i < partNames.length; i++) {
-            if (quantities[i] > LOW_STOCK_LIMIT) {
+            if (quantities[i] < LOW_STOCK_LIMIT) {
                 reorderList[count] = partNames[i];
                 count++;
             }
@@ -176,6 +186,7 @@ public class InventoryManager {
                     break;
                 case 2:
                     System.out.printf("Total inventory value: $%.2f%n", getTotalValue());
+                    break;
                 case 3:
                     usePart();
                     break;
