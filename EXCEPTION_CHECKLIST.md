@@ -22,25 +22,25 @@ Every exception below can crash the program once Part 1 is fixed. Your job is to
 
 ## Rules for how you handle them
 
-- [ ] Each exception type above has its **own** `catch` block (do not use a single `catch (Exception e)` for everything)
-- [ ] Every message is friendly and tells the user what to do (for example "Please type a whole number"), with no stack trace
-- [ ] After any exception the program **returns to the menu** and keeps running
-- [ ] At least one `finally` block is used
-- [ ] After `InputMismatchException`, the bad input is cleared so the menu does not loop forever
-- [ ] Catch blocks are ordered so the program compiles (see the hint below)
+- [Y ] Each exception type above has its **own** `catch` block (do not use a single `catch (Exception e)` for everything)
+- [Y ] Every message is friendly and tells the user what to do (for example "Please type a whole number"), with no stack trace
+- [Y ] After any exception the program **returns to the menu** and keeps running
+- [Y ] At least one `finally` block is used
+- [Y ] After `InputMismatchException`, the bad input is cleared so the menu does not loop forever
+- [Y ] Catch blocks are ordered so the program compiles (see the hint below)
 
 **Hint:** Some exception types are subclasses of others. Java will not compile if a parent type is caught before its child. Check the Java documentation to see which of the six above are related to each other.
 
 ## Order Quote feature (option 9)
 
-- [ ] Asks for a target stock level
-- [ ] Prints one line per part below the target (units to order x price)
-- [ ] Prints a quote total
-- [ ] Uses `throw new IllegalArgumentException(...)` for a negative target (row 6 above)
+- [Y ] Asks for a target stock level
+- [Y ] Prints one line per part below the target (units to order x price)
+- [Y ] Prints a quote total
+- [Y ] Uses `throw new IllegalArgumentException(...)` for a negative target (row 6 above)
 
 ## Final check before you push
 
-- [ ] I pulled my partner's Part 1 commits before I started
-- [ ] I ran every row in the table above one last time and nothing crashes
-- [ ] I have at least two commits with clear messages
-- [ ] I pushed everything (`git push`)
+- [Y ] I pulled my partner's Part 1 commits before I started
+- [Y ] I ran every row in the table above one last time and nothing crashes
+- [Y ] I have at least two commits with clear messages
+- [Y ] I pushed everything (`git push`)

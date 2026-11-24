@@ -225,11 +225,11 @@ public class InventoryManager {
         try {
             System.out.println("Enter the desired stock level for all parts:");
             targetStockLevel = scanner.nextInt();
-            scanner.nextLine();
         } catch (Exception e) {
             System.out.println("Invalid input. Please enter a positive integer value.");
-            scanner.nextLine();
             return;
+        } finally {
+            scanner.nextLine();
         }
 
         if (targetStockLevel < 0) {
@@ -238,23 +238,25 @@ public class InventoryManager {
         }
 
         for (int i = 0; i < partNames.length; i++) {
-            if (partsToOrder[i] != null && quantities[i] < targetStockLevel) {
+            if (quantities[i] < targetStockLevel) {
                 partsToOrder[i] = partNames[i];
                 partsToOrderQuantities[i] = targetStockLevel - quantities[i];
             }
         }
+
         for (int i = 0; i < partsToOrder.length; i++) {
-            int index = findPart(partsToOrder[i]);
-            partsToOrderPrices[i] = prices[index];
+            if (partsToOrder[i] != null) {
+                int index = findPart(partsToOrder[i]);
+                partsToOrderPrices[i] = prices[index];
+            }
         }
 
         System.out.println("\n--- Order Quote ---");
         for (int i = 0; i < partsToOrder.length; i++) {
-            if (partsToOrder[i] == null) {
-                continue;
+            if (partsToOrder[i] != null) {
+                System.out.println(partsToOrder[i] + " order | " + partsToOrderQuantities[i] + " x $" + partsToOrderPrices[i] + " = $" + (partsToOrderQuantities[i] * partsToOrderPrices[i]));
+                quoteTotal += partsToOrderQuantities[i] * partsToOrderPrices[i];
             }
-            System.out.printf("%s order | %d x $%.2f = $%.2f%n", partsToOrder[i], partsToOrderQuantities[i], partsToOrderPrices[i], (partsToOrderQuantities[i] * partsToOrderPrices[i]));
-            quoteTotal += partsToOrderQuantities[i] * partsToOrderPrices[i];
         }
         System.out.printf("Quote total = $%.2f", quoteTotal);
 
