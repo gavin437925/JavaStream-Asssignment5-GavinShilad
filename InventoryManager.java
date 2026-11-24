@@ -1,3 +1,4 @@
+import java.sql.Array;
 import java.util.Scanner;
 
 // =============================================================================
@@ -49,58 +50,109 @@ public class InventoryManager {
     // ---------------------------------------------------------------- Option 3
     public static void usePart() {
         printInventory();
-        System.out.print("Part number to use: ");
-        int partNumber = scanner.nextInt();
-        System.out.print("How many units? ");
-        int amount = scanner.nextInt();
+        boolean invalidInput = true;
+        int partNumber = 0, amount = 0;
+        while (invalidInput) {
+            try {
+                System.out.print("Part number to use: ");
+                partNumber = scanner.nextInt();
+                System.out.print("How many units? ");
+                amount = scanner.nextInt();
+                invalidInput = false;
+
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter numeric values within the allowed range.");
+                scanner.nextLine();
+            }
+        }
 
         int index = partNumber - 1;
-        if (amount > quantities[index]) {
-            throw new IllegalArgumentException("Not enough " + partNames[index] + " in stock!");
-        } else if (amount < 0) {
-            throw new IllegalArgumentException("Cannot use a negative amount of parts!");
-        } else if (index < 0 || index >= partNames.length) {
-            throw new IllegalArgumentException("Invalid part number!");
-        } else if (amount == 0) {
-            System.out.println("No parts were used.");
-            return;
+
+        try {
+            if (amount < 0) {
+                throw new IllegalArgumentException("Cannot use a negative amount of parts!");
+            } else if (amount > quantities[index]) {
+                throw new IllegalArgumentException("Not enough " + partNames[index] + " in stock!");
+            } else if (amount == 0) {
+                System.out.println("No parts were used.");
+                return;
+            }
+
+            quantities[index] -= amount;
+            System.out.println("Used " + amount + " " + partNames[index]
+                    + ". Remaining: " + quantities[index]);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid part number!");
         }
-        quantities[index] -= amount;
-        System.out.println("Used " + amount + " " + partNames[index] + ". Remaining: " + quantities[index]);
-    }
+        }
 
     // ---------------------------------------------------------------- Option 4
     public static void restockPart() {
         printInventory();
-        System.out.print("Part number to restock: ");
-        int partNumber = scanner.nextInt();
-        System.out.print("How many units? ");
-        int amount = scanner.nextInt();
+        boolean invalidInput = true;
+        int partNumber = 0, amount = 0;
+        while (invalidInput) {
+            try {
+                System.out.print("Part number to restock: ");
+                partNumber = scanner.nextInt();
+                System.out.print("How many units? ");
+                amount = scanner.nextInt();
+                invalidInput = false;
 
-        if (amount < 0) {
-            throw new IllegalArgumentException("Cannot restock a negative amount of parts!");
-        } else if (amount == 0) {
-            System.out.println("No parts were restocked.");
-            return;
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter numeric values.");
+                scanner.nextLine();
+            }
         }
-        int index = partNumber - 1;
-        quantities[index] += amount;
-        System.out.println("Restocked " + partNames[index] + ". New quantity: " + quantities[index]);
+
+        try {
+            if (amount < 0) {
+                throw new IllegalArgumentException("Cannot restock a negative amount of parts!");
+            } else if (amount == 0) {
+                System.out.println("No parts were restocked.");
+                return;
+            } else if (partNumber < 1 || partNumber > partNames.length) {
+                throw new IllegalArgumentException("Invalid part number!");
+            }
+            int index = partNumber - 1;
+            quantities[index] += amount;
+            System.out.println("Restocked " + partNames[index] + ". New quantity: " + quantities[index]);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid number entered!");
+        }
     }
 
     // ---------------------------------------------------------------- Option 5
     public static void updatePrice() {
         printInventory();
-        System.out.print("Part number to reprice: ");
-        int partNumber = scanner.nextInt();
-        System.out.print("New price: ");
-        double newPrice = Double.parseDouble(scanner.next());
-        if (newPrice < 0) {
-            throw new IllegalArgumentException("Price cannot be negative!");
+        boolean invalidInput = true;
+        int partNumber = 0;
+        double newPrice = 0;
+        while (invalidInput) {
+            try {
+                System.out.print("Part number to reprice: ");
+                partNumber = scanner.nextInt();
+                System.out.print("New price: ");
+                newPrice = Double.parseDouble(scanner.next());
+                invalidInput = false;
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter numeric values.");
+                scanner.nextLine();
+            }
         }
-        int index = partNumber - 1;
-        prices[index] = newPrice;
+        try {
+            if (newPrice < 0) {
+                throw new IllegalArgumentException("Price cannot be negative!");
+            } else if (partNumber < 1 || partNumber > partNames.length) {
+                throw new IllegalArgumentException("Invalid part number!");
+            }
+            int index = partNumber - 1;
+            prices[index] = newPrice;
         System.out.println(partNames[index] + " now costs $" + prices[index]);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid input. Please enter numeric values.");
+        }
+        
     }
 
     // ---------------------------------------------------------------- Option 6
@@ -164,7 +216,49 @@ public class InventoryManager {
     // ---------------------------------------------------------------- Option 9
     // PART 2 FEATURE - not written yet.
     public static void orderQuote() {
-        System.out.println("Order quote is coming soon.");
+        int targetStockLevel = 0;
+        String[] partsToOrder = new String[partNames.length];
+        int[] partsToOrderQuantities = new int[partNames.length];
+        double[] partsToOrderPrices = new double[partNames.length];
+        double quoteTotal = 0;
+
+        try {
+            System.out.println("Enter the desired stock level for all parts:");
+            targetStockLevel = scanner.nextInt();
+            scanner.nextLine();
+        } catch (Exception e) {
+            System.out.println("Invalid input. Please enter a positive integer value.");
+            scanner.nextLine();
+            return;
+        }
+
+        if (targetStockLevel < 0) {
+            System.out.println("Target stock level cannot be negative. Please enter a positive integer.");
+            return;
+        }
+
+        for (int i = 0; i < partNames.length; i++) {
+            if (partsToOrder[i] != null && quantities[i] < targetStockLevel) {
+                partsToOrder[i] = partNames[i];
+                partsToOrderQuantities[i] = targetStockLevel - quantities[i];
+            }
+        }
+        for (int i = 0; i < partsToOrder.length; i++) {
+            int index = findPart(partsToOrder[i]);
+            partsToOrderPrices[i] = prices[index];
+        }
+
+        System.out.println("\n--- Order Quote ---");
+        for (int i = 0; i < partsToOrder.length; i++) {
+            if (partsToOrder[i] == null) {
+                continue;
+            }
+            System.out.printf("%s order | %d x $%.2f = $%.2f%n", partsToOrder[i], partsToOrderQuantities[i], partsToOrderPrices[i], (partsToOrderQuantities[i] * partsToOrderPrices[i]));
+            quoteTotal += partsToOrderQuantities[i] * partsToOrderPrices[i];
+        }
+        System.out.printf("Quote total = $%.2f", quoteTotal);
+
+        return;
     }
 
     // ------------------------------------------------------------------- Menu
@@ -187,7 +281,19 @@ public class InventoryManager {
         boolean running = true;
         while (running) {
             printMenu();
-            int choice = scanner.nextInt();
+
+            boolean invalidInput = true;
+            int choice = 0;
+            while (invalidInput) {
+                try {
+                    choice = scanner.nextInt();
+                    invalidInput = false;
+
+                } catch (Exception e) {
+                    System.out.println("Invalid input. Please enter numeric values.");
+                    scanner.nextLine();
+               }
+            }
 
             switch (choice) {
                 case 1:

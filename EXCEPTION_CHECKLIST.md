@@ -1,6 +1,6 @@
 # Part 2 Exception Checklist
 
-Part 2 author: _______________________
+Part 2 author: ________
 
 Every exception below can crash the program once Part 1 is fixed. Your job is to make sure **none of them can**. For each one:
 
@@ -13,12 +13,12 @@ Every exception below can crash the program once Part 1 is fixed. Your job is to
 
 | # | Exception | What it means | How to trigger it | Where it is thrown | Reproduced | Caught | Tested |
 |---|-----------|---------------|-------------------|--------------------|:---:|:---:|:---:|
-| 1 | `InputMismatchException` | Text was typed where a whole number was expected | Type `abc` at the menu, or as a part number, amount or target (options 3, 4, 5, 9) | any `scanner.nextInt()` | [ ] | [ ] | [ ] |
-| 2 | `ArrayIndexOutOfBoundsException` | A part number that is not in the inventory | Options 3, 4 or 5: enter part number `0` or `6` | `usePart`, `restockPart`, `updatePrice` | [ ] | [ ] | [ ] |
-| 3 | `NumberFormatException` | A String cannot be converted to a number | Option 5: enter `abc` as the new price | `updatePrice` (`Double.parseDouble`) | [ ] | [ ] | [ ] |
-| 4 | `ArithmeticException` | Whole-number division by zero | Use up **all** units of **all five** parts with option 3, then choose option 6 | `averageStockPerStockedPart` | [ ] | [ ] | [ ] |
-| 5 | `IllegalArgumentException` (not enough stock) | The program deliberately throws this when you use more than you have | Option 3: use `99` units of any part | `usePart` | [ ] | [ ] | [ ] |
-| 6 | `IllegalArgumentException` (negative target) | **You** throw this in your Order Quote code | Option 9: enter `-1` as the target | `orderQuote` (you write this) | [ ] | [ ] | [ ] |
+| 1 | `InputMismatchException` | Text was typed where a whole number was expected | Type `abc` at the menu, or as a part number, amount or target (options 3, 4, 5, 9) | any `scanner.nextInt()` | [Y ] | [Y ] | [Y ] |
+| 2 | `ArrayIndexOutOfBoundsException` | A part number that is not in the inventory | Options 3, 4 or 5: enter part number `0` or `6` | `usePart`, `restockPart`, `updatePrice` | [Y ] | [Y ] | [Y ] |
+| 3 | `NumberFormatException` | A String cannot be converted to a number | Option 5: enter `abc` as the new price | `updatePrice` (`Double.parseDouble`) | [Y ] | [Y ] | [Y ] |
+| 4 | `ArithmeticException` | Whole-number division by zero | Use up **all** units of **all five** parts with option 3, then choose option 6 | `averageStockPerStockedPart` | [Y ] | [Y ] | [Y ] | COMMENT: This was already fixed before because an if-else statement is used to take care of this very case of division by zero.
+| 5 | `IllegalArgumentException` (not enough stock) | The program deliberately throws this when you use more than you have | Option 3: use `99` units of any part | `usePart` | [Y ] | [Y ] | [Y ] |
+| 6 | `IllegalArgumentException` (negative target) | **You** throw this in your Order Quote code | Option 9: enter `-1` as the target | `orderQuote` (you write this) | [Y ] | [Y ] | [Y ] |
 
 ## Rules for how you handle them
 
